@@ -138,11 +138,11 @@ export const StreamProvider: React.FC<{ children: ReactNode }> = ({
     process.env.NEXT_PUBLIC_ASSISTANT_ID;
 
   // Use URL params with env var fallbacks
-  var [apiUrl, setApiUrl] = useQueryState("apiUrl", {
-    defaultValue: envApiUrl || "",
+  const [apiUrl, setApiUrl] = useQueryState("apiUrl", {
+    defaultValue: envApiUrl || "https://healthcoach-production-9704.up.railway.app",
   });
-  var [assistantId, setAssistantId] = useQueryState("assistantId", {
-    defaultValue: envAssistantId || "",
+  const [assistantId, setAssistantId] = useQueryState("assistantId", {
+    defaultValue: envAssistantId || "agent",
   });
 
   // For API key, use localStorage with env var fallback
@@ -155,11 +155,10 @@ export const StreamProvider: React.FC<{ children: ReactNode }> = ({
     window.localStorage.setItem("lg:chat:apiKey", key);
     _setApiKey(key);
   };
-  apiUrl = "https://healthcoach-production-9704.up.railway.app"
-  assistantId = "agent"
+
   // Determine final values to use, prioritizing URL params then env vars
   const finalApiUrl = apiUrl || envApiUrl;
-  
+
   const finalAssistantId = assistantId || envAssistantId;
 
   // Show the form if we: don't have an API URL, or don't have an assistant ID
