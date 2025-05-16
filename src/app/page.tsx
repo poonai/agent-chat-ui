@@ -86,7 +86,7 @@ export default function DemoPage(): React.ReactNode {
 
 
 
-function FeatureCard({ icon, title, description }) {
+function FeatureCard({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm border hover:shadow-md transition-shadow">
       <div className="mb-4">{icon}</div>
