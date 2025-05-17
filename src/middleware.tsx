@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server'
 
 const isProtectedRoute = createRouteMatcher(['/dashboard(.*)'])
 
-export default clerkMiddleware(async (auth, req) => {
+const middleware =  clerkMiddleware(async (auth, req) => {
     const { pathname } = req.nextUrl;
 
     if (pathname === '/') {
@@ -18,6 +18,8 @@ export default clerkMiddleware(async (auth, req) => {
         await auth.protect();
     }
 });
+
+export default middleware
 
 export const config = {
   matcher: [
