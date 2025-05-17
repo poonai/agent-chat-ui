@@ -133,6 +133,7 @@ const DEFAULT_ASSISTANT_ID = "agent";
 
 const allowedAssitantIds = [
   "plan_habit",
+  "check_in_habit"
 ]
 
 export const StreamProvider: React.FC<{ children: ReactNode }> = ({

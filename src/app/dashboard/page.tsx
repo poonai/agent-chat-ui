@@ -5,7 +5,7 @@ import { StreamProvider } from "@/providers/Stream";
 import { ThreadProvider } from "@/providers/Thread";
 import { ArtifactProvider } from "@/components/thread/artifact";
 import { Toaster } from "@/components/ui/sonner";
-import { Card, CardHeader, CardTitle, CardDescription,CardContent,CardFooter } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import React from "react";
 import { currentUser } from '@clerk/nextjs/server'
 import { Button } from "@/components/ui/button"
@@ -30,7 +30,7 @@ export default async function DashboardPage(): Promise<React.ReactNode> {
             <CardDescription>Your AI health coach is ready to help you build sustainable habits to acheive your goal.</CardDescription>
           </CardHeader>
           <CardContent>
-            
+
           </CardContent>
           <CardFooter>
             <Button><Link href={`/chat?assistantId=plan_habit&userId=${user?.id}`}>Plan Habit</Link></Button>
@@ -42,9 +42,11 @@ export default async function DashboardPage(): Promise<React.ReactNode> {
             <CardDescription>What did you accomplish today?</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-gray-500">Your AI health coach is ready to help you build sustainable habits.</p>
-            <p className="text-gray-500">Let's get started!</p>
+
           </CardContent>
+          <CardFooter>
+            <Button><Link href={`/chat?assistantId=check_in_habit&userId=${user?.id}`}>Checkin</Link></Button>
+          </CardFooter>
         </Card>
 
       </div>
