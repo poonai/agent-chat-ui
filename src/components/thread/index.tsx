@@ -299,7 +299,7 @@ export function Thread() {
               : { duration: 0 }
           }
         >
-          {!chatStarted && (
+          {/* {!chatStarted && (
             <div className="absolute top-0 left-0 z-10 flex w-full items-center justify-between gap-3 p-2 pl-4">
               <div>
                 {(!chatHistoryOpen || !isLargeScreen) && (
@@ -375,7 +375,7 @@ export function Thread() {
 
               <div className="from-background to-background/0 absolute inset-x-0 top-full h-5 bg-gradient-to-b" />
             </div>
-          )}
+          )} */}
 
           <StickToBottom className="relative flex-1 overflow-hidden">
             <StickyToBottomContent
