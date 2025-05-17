@@ -108,6 +108,16 @@ function OpenGitHubRepo() {
   );
 }
 
+const assistantChatPlaceHolder: { [key: string]: string } = {
+  "plan_habit": "Type your goal ...",
+  "default": "Type your message...",
+};
+
+const assistantChatHeader: { [key: string]: string } = {
+  "plan_habit": "Goal Planner",
+  "default": "Agent Chat",
+}
+
 export function Thread() {
   const [artifactContext, setArtifactContext] = useArtifactContext();
   const [artifactOpen, closeArtifact] = useArtifactOpen();
@@ -124,6 +134,9 @@ export function Thread() {
   const [input, setInput] = useState("");
   const [firstTokenReceived, setFirstTokenReceived] = useState(false);
   const isLargeScreen = useMediaQuery("(min-width: 1024px)");
+  const [assistantId, _] = useQueryState("assistantId", { defaultValue: "default" });
+  const [userId, _a] = useQueryState("userId", { defaultValue: "" });
+  
 
   const stream = useStreamContext();
   const messages = stream.messages;
@@ -198,7 +211,7 @@ export function Thread() {
       Object.keys(artifactContext).length > 0 ? artifactContext : undefined;
 
     stream.submit(
-      { messages: [...toolMessages, newHumanMessage], context },
+      { messages: [...toolMessages, newHumanMessage], userId: userId, context },
       {
         streamMode: ["values"],
         optimisticValues: (prev) => ({
@@ -338,12 +351,9 @@ export function Thread() {
                     damping: 30,
                   }}
                 >
-                  <LangGraphLogoSVG
-                    width={32}
-                    height={32}
-                  />
+
                   <span className="text-xl font-semibold tracking-tight">
-                    Agent Chat
+                    {assistantChatHeader[assistantId] ?? "Agent Chat"}
                   </span>
                 </motion.button>
               </div>
@@ -414,9 +424,8 @@ export function Thread() {
                 <div className="sticky bottom-0 flex flex-col items-center gap-8 bg-white">
                   {!chatStarted && (
                     <div className="flex items-center gap-3">
-                      <LangGraphLogoSVG className="h-8 flex-shrink-0" />
                       <h1 className="text-2xl font-semibold tracking-tight">
-                        Agent Chat
+                        {assistantChatHeader[assistantId] ?? "Agent Chat"}
                       </h1>
                     </div>
                   )}
@@ -444,7 +453,7 @@ export function Thread() {
                             form?.requestSubmit();
                           }
                         }}
-                        placeholder="Type your message..."
+                        placeholder={assistantChatPlaceHolder[assistantId] ?? "Type your message..."}
                         className="field-sizing-content resize-none border-none bg-transparent p-3.5 pb-0 shadow-none ring-0 outline-none focus:ring-0 focus:outline-none"
                       />
 

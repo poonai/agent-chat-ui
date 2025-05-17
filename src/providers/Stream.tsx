@@ -24,8 +24,9 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { getApiKey } from "@/lib/api-key";
 import { useThreads } from "./Thread";
 import { toast } from "sonner";
+import { redirect } from 'next/navigation'
 
-export type StateType = { messages: Message[]; ui?: UIMessage[] };
+export type StateType = { messages: Message[]; ui?: UIMessage[];userId?: string };
 
 const useTypedStream = useStream<
   StateType,
@@ -34,6 +35,7 @@ const useTypedStream = useStream<
       messages?: Message[] | Message | string;
       ui?: (UIMessage | RemoveUIMessage)[] | UIMessage | RemoveUIMessage;
       context?: Record<string, unknown>;
+      userId?: string
     };
     CustomEventType: UIMessage | RemoveUIMessage;
   }
@@ -129,6 +131,10 @@ const StreamSession = ({
 const DEFAULT_API_URL = "http://localhost:2024";
 const DEFAULT_ASSISTANT_ID = "agent";
 
+const allowedAssitantIds = [
+  "plan_habit",
+]
+
 export const StreamProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
@@ -139,11 +145,24 @@ export const StreamProvider: React.FC<{ children: ReactNode }> = ({
 
   // Use URL params with env var fallbacks
   const [apiUrl, setApiUrl] = useQueryState("apiUrl", {
-    defaultValue: envApiUrl || "https://healthcoach-production-9704.up.railway.app",
+    defaultValue: envApiUrl || "http://localhost:2024",
   });
   const [assistantId, setAssistantId] = useQueryState("assistantId", {
     defaultValue: envAssistantId || "agent",
   });
+
+  // Check if the assistant ID is valid
+  if (assistantId && !allowedAssitantIds.includes(assistantId)) {
+    redirect("/dashboard");
+  }
+
+  const [userID, _] = useQueryState("userId", {
+    defaultValue: "",
+  });
+  // Check if the user ID is valid
+  if (userID === "") {
+    redirect("/dashboard");
+  }
 
   // For API key, use localStorage with env var fallback
   const [apiKey, _setApiKey] = useState(() => {

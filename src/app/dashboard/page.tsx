@@ -13,6 +13,7 @@ import Link from 'next/link'
 
 export default async function DashboardPage(): Promise<React.ReactNode> {
   const user = await currentUser();
+
   return (
     <React.Suspense fallback={<div>Loading (layout)...</div>}>
       <div className="grid grid-cols-2 gap-4 bg-gray-50">
@@ -25,14 +26,14 @@ export default async function DashboardPage(): Promise<React.ReactNode> {
 
         <Card className="col m-3">
           <CardHeader>
-            <CardTitle>Habit Planner</CardTitle>
-            <CardDescription>Your AI health coach is ready to help you build sustainable habits.</CardDescription>
+            <CardTitle>Goal Planner</CardTitle>
+            <CardDescription>Your AI health coach is ready to help you build sustainable habits to acheive your goal.</CardDescription>
           </CardHeader>
           <CardContent>
             
           </CardContent>
           <CardFooter>
-            <Button><Link href="/chat">Plan Habit</Link></Button>
+            <Button><Link href={`/chat?assistantId=plan_habit&userId=${user?.id}`}>Plan Habit</Link></Button>
           </CardFooter>
         </Card>
         <Card className="col m-3">
