@@ -1,13 +1,13 @@
-"use client";
+"use server";
 
 import { Toaster } from "@/components/ui/sonner";
 import React from "react";
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Brain, Calendar, Heart, MessageSquare, Trophy } from "lucide-react"
-import Link from 'next/link'
+// import Link from 'next/link'
 
 
-export default function DemoPage(): React.ReactNode {
+export default async function DemoPage(): Promise<React.ReactNode> {
   return (
     <React.Suspense fallback={<div>Loading (layout)...</div>}>
       <Toaster />
@@ -25,7 +25,7 @@ export default function DemoPage(): React.ReactNode {
               </div>
               <div className="flex justify-center">
                 <Button size="lg" className="flex items-center gap-2">
-                  <Link href="/dashboard">Get Started</Link>
+                  <a href="/dashboard">Get Started</a>
                   <ArrowRight />
                 </Button>
               </div>
