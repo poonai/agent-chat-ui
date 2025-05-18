@@ -5,19 +5,24 @@ import { currentUser } from '@clerk/nextjs/server'
 import { Button } from "@/components/ui/button"
 import Link from 'next/link'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
-import { getGoals } from "@/lib/db/goal";
-import { habit_plan } from "@prisma/client/client";
+import { getGoals,GoalWithCheckIn } from "@/lib/db/goal";
 
 /**
  * Calculates the current and highest streak for a goal's check-ins.
  * @param goal - The goal object with check_in array (sorted or unsorted).
  * @returns { current: number, highest: number }
  */
-function calculateStreaks(goal: { check_in: { date: Date | string; status: boolean }[] }) {
+function calculateStreaks(goal: GoalWithCheckIn) {
   // Sort check-ins by date ascending
   const checkIns = [...goal.check_in]
     .filter(ci => ci.status)
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    .filter(ci => ci.date !== null)
+    .sort((a, b) => {
+      if (!a.date && !b.date) return 0;
+      if (!a.date) return 1;
+      if (!b.date) return -1;
+      return a.date.getTime() - b.date.getTime();
+    });
 
   if (checkIns.length === 0) return { current: 0, highest: 0 };
 
@@ -26,8 +31,13 @@ function calculateStreaks(goal: { check_in: { date: Date | string; status: boole
   let streak = 1;
 
   for (let i = 1; i < checkIns.length; i++) {
-    const prev = new Date(checkIns[i - 1].date);
-    const curr = new Date(checkIns[i].date);
+    const prev = checkIns[i - 1].date;
+    const curr = checkIns[i].date;
+
+    if (!prev || !curr) {
+      streak = 1;
+      continue;
+    }
 
     // Check if consecutive days
     const diffDays = Math.round((curr.getTime() - prev.getTime()) / (1000 * 60 * 60 * 24));
@@ -42,8 +52,13 @@ function calculateStreaks(goal: { check_in: { date: Date | string; status: boole
   // Calculate current streak (from the end)
   streak = 1;
   for (let i = checkIns.length - 1; i > 0; i--) {
-    const curr = new Date(checkIns[i].date);
-    const prev = new Date(checkIns[i - 1].date);
+    const currDate = checkIns[i].date;
+    const prevDate = checkIns[i - 1].date;
+
+    if (!currDate || !prevDate) break;
+
+    const curr = new Date(currDate);
+    const prev = new Date(prevDate);
     const diffDays = Math.round((curr.getTime() - prev.getTime()) / (1000 * 60 * 60 * 24));
     if (diffDays === 1) {
       streak++;
@@ -81,14 +96,14 @@ const DashboardCard: React.FC<DashboardCardProps> = ({ title, description, link,
   </Card>
 );
 
-const GoalCard: React.FC<habit_plan> = ({ goal, action, check_in }) => {
-  const { current, highest } = calculateStreaks({ check_in: check_in });
+const GoalCard: React.FC<GoalWithCheckIn> = (goal) => {
+  const { current, highest } = calculateStreaks(goal);
 
   return (
     <Card className="col-span-2">
       <CardHeader>
-        <CardTitle>{goal}</CardTitle>
-        <CardDescription>{action}</CardDescription>
+        <CardTitle>{goal.goal}</CardTitle>
+        <CardDescription>{goal.action}</CardDescription>
       </CardHeader>
       <CardContent>
         <p>Current Streak: {current} days</p>
