@@ -1,11 +1,15 @@
-"use server";
+"use client";
 
 import React from "react";
-import { currentUser } from '@clerk/nextjs/server'
 import { Button } from "@/components/ui/button"
 import Link from 'next/link'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
-import { getGoals,GoalWithCheckIn } from "@/lib/db/goal";
+import { GoalWithCheckIn } from "@/lib/db/goal";
+import { useUser } from "@clerk/nextjs";
+import useSWR from 'swr'
+
+const fetcher = (url: string) => fetch(url).then((r) => r.json())
+
 
 /**
  * Calculates the current and highest streak for a goal's check-ins.
@@ -21,7 +25,7 @@ function calculateStreaks(goal: GoalWithCheckIn) {
       if (!a.date && !b.date) return 0;
       if (!a.date) return 1;
       if (!b.date) return -1;
-      return a.date.getTime() - b.date.getTime();
+      return new Date(a.date).getTime() - new Date(b.date).getTime();
     });
 
   if (checkIns.length === 0) return { current: 0, highest: 0 };
@@ -31,8 +35,8 @@ function calculateStreaks(goal: GoalWithCheckIn) {
   let streak = 1;
 
   for (let i = 1; i < checkIns.length; i++) {
-    const prev = checkIns[i - 1].date;
-    const curr = checkIns[i].date;
+    const prev = new Date(checkIns[i - 1].date ?? "");
+    const curr = new Date(checkIns[i].date ?? "");
 
     if (!prev || !curr) {
       streak = 1;
@@ -114,8 +118,26 @@ const GoalCard: React.FC<GoalWithCheckIn> = (goal) => {
 }
 
 
-export default async function DashboardPage(): Promise<React.ReactNode> {
-  const user = await currentUser();
+export default function DashboardPage(): React.ReactNode {
+  const { isSignedIn, user, isLoaded } = useUser();
+
+  const { data, error, isLoading } = useSWR(
+    '/api/goal',
+    fetcher
+  )
+
+  if (!isLoaded) {
+    return (<div>Loading...</div>);
+  }
+
+  if (!isSignedIn) {
+    return (<div>Sign in to view this page</div>);
+  }
+
+
+
+  if (isLoading) return <div>Loading...</div>
+  if (error) return <div>Error: {error.message}</div>
 
   const cards: DashboardCardProps[] = [
     {
@@ -132,8 +154,6 @@ export default async function DashboardPage(): Promise<React.ReactNode> {
     },
   ];
 
-  // Fetch goals data
-  const goals = await getGoals(user?.id as string);
 
   return (
     <React.Suspense fallback={<div>Loading (layout)...</div>}>
@@ -153,7 +173,7 @@ export default async function DashboardPage(): Promise<React.ReactNode> {
             <p className="text-gray-500">Here are your current goals:</p>
           </div>
           <section>
-            {goals.map((goal) => (
+            {data.map((goal: GoalWithCheckIn) => (
               <GoalCard key={goal.id} {...goal} />
             ))}
           </section>

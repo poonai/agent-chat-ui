@@ -1,9 +1,14 @@
-import { PrismaClient } from '@prisma/client'
 import { NextResponse } from 'next/server'
+import {currentUser} from '@clerk/nextjs/server'
+import { getGoals } from '@/lib/db/goal'
 
-const prisma = new PrismaClient()
 
 export async function GET(request: Request) {
-  const goals = await prisma.habit_plan.findMany()
+  const user = await currentUser()
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const goals = await getGoals(user.id)
   return NextResponse.json(goals)
 }
