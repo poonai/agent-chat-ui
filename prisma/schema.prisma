@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model alembic_version {
+  version_num String @id(map: "alembic_version_pkc") @db.VarChar(32)
+}
+
+model check_in {
+  id            Int        @id @default(autoincrement())
+  userId        String?    @db.VarChar
+  date          DateTime?  @db.Timestamp(6)
+  status        Boolean?
+  habit_plan_id Int
+  habit_plan    habit_plan @relation(fields: [habit_plan_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model diet {
+  id          Int       @id @default(autoincrement())
+  name        String?   @db.VarChar
+  consumed_at DateTime? @db.Timestamp(6)
+  carbs       Float?
+  fat         Float?
+  protein     Float?
+  calories    Float?
+  vitamin_a   Float?
+  vitamin_b   Float?
+  vitamin_c   Float?
+  vitamin_d   Float?
+  vitamin_e   Float?
+  vitamin_k   Float?
+  calcium     Float?
+  magnesium   Float?
+  potassium   Float?
+  sodium      Float?
+  iron        Float?
+  zinc        Float?
+  selenium    Float?
+  phosphorus  Float?
+  iodine      Float?
+  copper      Float?
+  manganese   Float?
+  chromium    Float?
+}
+
+model habit_plan {
+  id         Int        @id @default(autoincrement())
+  created_at DateTime?  @db.Timestamp(6)
+  goal       String?    @db.VarChar
+  duration   Int?
+  action     String?    @db.VarChar
+  userId     String?    @db.VarChar
+  completed  Boolean?
+  check_in   check_in[]
+}
