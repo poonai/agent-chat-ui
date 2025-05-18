@@ -33,8 +33,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Agent Inbox",
-  description: "Agent Inbox UX by LangChain",
+  title: "Health Coach",
+  description: "A health coach assistant",
 };
 
 export default function RootLayout({
