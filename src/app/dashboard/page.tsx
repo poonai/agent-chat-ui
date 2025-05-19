@@ -7,6 +7,8 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { GoalWithCheckIn } from "@/lib/db/goal";
 import { useUser } from "@clerk/nextjs";
 import useSWR from 'swr'
+import { usePostHog } from 'posthog-js/react'
+
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json())
 
@@ -132,6 +134,7 @@ function urlBase64ToUint8Array(base64String: string) {
 
 export default function DashboardPage(): React.ReactNode {
   const { isSignedIn, user, isLoaded } = useUser();
+  const posthog = usePostHog()
 
   const { data, error, isLoading } = useSWR(
     '/api/goal',
@@ -168,6 +171,14 @@ export default function DashboardPage(): React.ReactNode {
       console.error('Error subscribing to push notifications:', error);
     });
   }, []);
+
+  useEffect(() => {
+    if (posthog && user) {
+      posthog.identify(user.id, {
+        email: user.emailAddresses[0]?.emailAddress,
+      });
+    }
+  }, [user, posthog]);
 
   if (!isLoaded) {
     return (<div>Loading...</div>);
