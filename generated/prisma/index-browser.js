@@ -172,7 +172,6 @@ exports.Prisma.Habit_planScalarFieldEnum = {
 
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
-  userId: 'userId',
   pushSubscription: 'pushSubscription'
 };
 

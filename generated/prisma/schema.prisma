@@ -61,7 +61,6 @@ model habit_plan {
 }
 
 model user {
-  id               Int     @id @default(autoincrement())
-  userId           String? @db.VarChar
+  id               String  @id @db.VarChar
   pushSubscription String? @db.VarChar
 }

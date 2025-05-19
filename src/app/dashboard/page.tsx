@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button"
 import Link from 'next/link'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
@@ -117,6 +117,18 @@ const GoalCard: React.FC<GoalWithCheckIn> = (goal) => {
   );
 }
 
+function urlBase64ToUint8Array(base64String: string) {
+  const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/')
+
+  const rawData = window.atob(base64)
+  const outputArray = new Uint8Array(rawData.length)
+
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i)
+  }
+  return outputArray
+}
 
 export default function DashboardPage(): React.ReactNode {
   const { isSignedIn, user, isLoaded } = useUser();
@@ -125,6 +137,37 @@ export default function DashboardPage(): React.ReactNode {
     '/api/goal',
     fetcher
   )
+
+  useEffect(() => {
+    const subscribePush = async () => {
+      if (!('serviceWorker' in navigator)) {
+        console.error('Service workers are not supported in this browser.');
+        return;
+      }
+
+      const registration = await navigator.serviceWorker.register('/sw.js', {
+        scope: '/',
+      });
+
+      await navigator.serviceWorker.ready;
+
+      const subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || ''),
+      });
+
+      await fetch('/api/push', {
+        method: 'POST',
+        body: JSON.stringify({ subscription }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    }
+    subscribePush().catch((error) => {
+      console.error('Error subscribing to push notifications:', error);
+    });
+  }, []);
 
   if (!isLoaded) {
     return (<div>Loading...</div>);
