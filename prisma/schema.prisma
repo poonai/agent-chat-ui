@@ -59,3 +59,9 @@ model habit_plan {
   completed  Boolean?
   check_in   check_in[]
 }
+
+model user {
+  id               Int     @id @default(autoincrement())
+  userId           String? @db.VarChar
+  pushSubscription String? @db.VarChar
+}

@@ -170,6 +170,12 @@ exports.Prisma.Habit_planScalarFieldEnum = {
   completed: 'completed'
 };
 
+exports.Prisma.UserScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  pushSubscription: 'pushSubscription'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -190,7 +196,8 @@ exports.Prisma.ModelName = {
   alembic_version: 'alembic_version',
   check_in: 'check_in',
   diet: 'diet',
-  habit_plan: 'habit_plan'
+  habit_plan: 'habit_plan',
+  user: 'user'
 };
 
 /**
