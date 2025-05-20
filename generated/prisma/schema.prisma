@@ -50,14 +50,16 @@ model diet {
 }
 
 model habit_plan {
-  id         Int        @id @default(autoincrement())
-  created_at DateTime?  @db.Timestamp(6)
-  goal       String?    @db.VarChar
-  duration   Int?
-  action     String?    @db.VarChar
-  userId     String?    @db.VarChar
-  completed  Boolean?
-  check_in   check_in[]
+  id           Int        @id @default(autoincrement())
+  created_at   DateTime?  @db.Timestamp(6)
+  goal         String?    @db.VarChar
+  duration     Int?
+  action       String?    @db.VarChar
+  userId       String?    @db.VarChar
+  completed    Boolean?
+  weekly       Boolean?
+  days_in_week Int?
+  check_in     check_in[]
 }
 
 model user {

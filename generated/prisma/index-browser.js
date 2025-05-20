@@ -167,7 +167,9 @@ exports.Prisma.Habit_planScalarFieldEnum = {
   duration: 'duration',
   action: 'action',
   userId: 'userId',
-  completed: 'completed'
+  completed: 'completed',
+  weekly: 'weekly',
+  days_in_week: 'days_in_week'
 };
 
 exports.Prisma.UserScalarFieldEnum = {

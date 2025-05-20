@@ -4,78 +4,21 @@ import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button"
 import Link from 'next/link'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
-import { GoalWithCheckIn } from "@/lib/db/goal";
+import { EnrichedGoalForDashboard, getEnrichedGoals, GoalWithCheckIn } from "@/lib/db/goal";
 import { useUser } from "@clerk/nextjs";
 import useSWR from 'swr'
 import { usePostHog } from 'posthog-js/react'
+import { Progress } from "@/components/ui/progress";
+import { percent } from "@/lib/utils";
+import { get } from "lodash";
+
+
 
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json())
 
 
-/**
- * Calculates the current and highest streak for a goal's check-ins.
- * @param goal - The goal object with check_in array (sorted or unsorted).
- * @returns { current: number, highest: number }
- */
-function calculateStreaks(goal: GoalWithCheckIn) {
-  // Sort check-ins by date ascending
-  const checkIns = [...goal.check_in]
-    .filter(ci => ci.status)
-    .filter(ci => ci.date !== null)
-    .sort((a, b) => {
-      if (!a.date && !b.date) return 0;
-      if (!a.date) return 1;
-      if (!b.date) return -1;
-      return new Date(a.date).getTime() - new Date(b.date).getTime();
-    });
 
-  if (checkIns.length === 0) return { current: 0, highest: 0 };
-
-  let currentStreak = 1;
-  let highestStreak = 1;
-  let streak = 1;
-
-  for (let i = 1; i < checkIns.length; i++) {
-    const prev = new Date(checkIns[i - 1].date ?? "");
-    const curr = new Date(checkIns[i].date ?? "");
-
-    if (!prev || !curr) {
-      streak = 1;
-      continue;
-    }
-
-    // Check if consecutive days
-    const diffDays = Math.round((curr.getTime() - prev.getTime()) / (1000 * 60 * 60 * 24));
-    if (diffDays === 1) {
-      streak++;
-      if (streak > highestStreak) highestStreak = streak;
-    } else {
-      streak = 1;
-    }
-  }
-
-  // Calculate current streak (from the end)
-  streak = 1;
-  for (let i = checkIns.length - 1; i > 0; i--) {
-    const currDate = checkIns[i].date;
-    const prevDate = checkIns[i - 1].date;
-
-    if (!currDate || !prevDate) break;
-
-    const curr = new Date(currDate);
-    const prev = new Date(prevDate);
-    const diffDays = Math.round((curr.getTime() - prev.getTime()) / (1000 * 60 * 60 * 24));
-    if (diffDays === 1) {
-      streak++;
-    } else {
-      break;
-    }
-  }
-  currentStreak = streak;
-
-  return { current: currentStreak, highest: highestStreak };
-}
 
 // DashboardCard component
 type DashboardCardProps = {
@@ -102,9 +45,7 @@ const DashboardCard: React.FC<DashboardCardProps> = ({ title, description, link,
   </Card>
 );
 
-const GoalCard: React.FC<GoalWithCheckIn> = (goal) => {
-  const { current, highest } = calculateStreaks(goal);
-
+const GoalCard: React.FC<EnrichedGoalForDashboard> = (goal) => {
   return (
     <Card className="col-span-2">
       <CardHeader>
@@ -112,8 +53,28 @@ const GoalCard: React.FC<GoalWithCheckIn> = (goal) => {
         <CardDescription>{goal.action}</CardDescription>
       </CardHeader>
       <CardContent>
-        <p>Current Streak: {current} days</p>
-        <p>Highest Streak: {highest} days</p>
+        {(!goal.weekly && goal.totalCheckInsCount > 0) ? (
+          <div>
+            <p>completed Days: {goal.currentCheckInsCount}</p>
+            <p>total Days: {goal.totalCheckInsCount}</p>
+            <p> Progress: <Progress value={percent(goal.currentCheckInsCount, goal.totalCheckInsCount)}></Progress></p>
+
+          </div>
+        ) : goal.weekly ? (
+          <div>
+            <p>completed Weekly Days: {goal.currentWeekCount}</p>
+            <p>completed Days: {goal.currentCheckInsCount}</p>
+            <p>total Days: {goal.totalCheckInsCount}</p>
+            <p>Current Week Progress: <Progress value={percent(goal.currentWeekCount, goal.targetWeekCount)}></Progress></p>
+            <p>Overall Progress: <Progress value={percent(goal.currentCheckInsCount, goal.totalCheckInsCount)}></Progress></p>
+          </div>
+
+        ) : (<div>
+          <p>Current Streak: {goal.currentStreak > 0 ? goal.currentStreak : 0}</p>
+          <p>Highest Streak: {goal.highestStreak > 0 ? goal.highestStreak : 0}</p>
+        </div>)}
+
+        {/* {!goal.weekly && goal.totalCheckInsCount > 0 ? ()} */}
       </CardContent>
     </Card>
   );
@@ -140,6 +101,8 @@ export default function DashboardPage(): React.ReactNode {
     '/api/goal',
     fetcher
   )
+
+  const goals = getEnrichedGoals(data as GoalWithCheckIn[]);
 
   useEffect(() => {
     const subscribePush = async () => {
@@ -227,7 +190,7 @@ export default function DashboardPage(): React.ReactNode {
             <p className="text-gray-500">Here are your current goals:</p>
           </div>
           <section>
-            {data.map((goal: GoalWithCheckIn) => (
+            {goals.map((goal: EnrichedGoalForDashboard) => (
               <GoalCard key={goal.id} {...goal} />
             ))}
           </section>
@@ -236,3 +199,4 @@ export default function DashboardPage(): React.ReactNode {
     </React.Suspense>
   );
 }
+

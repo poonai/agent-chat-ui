@@ -4694,11 +4694,13 @@ export namespace Prisma {
   export type Habit_planAvgAggregateOutputType = {
     id: number | null
     duration: number | null
+    days_in_week: number | null
   }
 
   export type Habit_planSumAggregateOutputType = {
     id: number | null
     duration: number | null
+    days_in_week: number | null
   }
 
   export type Habit_planMinAggregateOutputType = {
@@ -4709,6 +4711,8 @@ export namespace Prisma {
     action: string | null
     userId: string | null
     completed: boolean | null
+    weekly: boolean | null
+    days_in_week: number | null
   }
 
   export type Habit_planMaxAggregateOutputType = {
@@ -4719,6 +4723,8 @@ export namespace Prisma {
     action: string | null
     userId: string | null
     completed: boolean | null
+    weekly: boolean | null
+    days_in_week: number | null
   }
 
   export type Habit_planCountAggregateOutputType = {
@@ -4729,6 +4735,8 @@ export namespace Prisma {
     action: number
     userId: number
     completed: number
+    weekly: number
+    days_in_week: number
     _all: number
   }
 
@@ -4736,11 +4744,13 @@ export namespace Prisma {
   export type Habit_planAvgAggregateInputType = {
     id?: true
     duration?: true
+    days_in_week?: true
   }
 
   export type Habit_planSumAggregateInputType = {
     id?: true
     duration?: true
+    days_in_week?: true
   }
 
   export type Habit_planMinAggregateInputType = {
@@ -4751,6 +4761,8 @@ export namespace Prisma {
     action?: true
     userId?: true
     completed?: true
+    weekly?: true
+    days_in_week?: true
   }
 
   export type Habit_planMaxAggregateInputType = {
@@ -4761,6 +4773,8 @@ export namespace Prisma {
     action?: true
     userId?: true
     completed?: true
+    weekly?: true
+    days_in_week?: true
   }
 
   export type Habit_planCountAggregateInputType = {
@@ -4771,6 +4785,8 @@ export namespace Prisma {
     action?: true
     userId?: true
     completed?: true
+    weekly?: true
+    days_in_week?: true
     _all?: true
   }
 
@@ -4868,6 +4884,8 @@ export namespace Prisma {
     action: string | null
     userId: string | null
     completed: boolean | null
+    weekly: boolean | null
+    days_in_week: number | null
     _count: Habit_planCountAggregateOutputType | null
     _avg: Habit_planAvgAggregateOutputType | null
     _sum: Habit_planSumAggregateOutputType | null
@@ -4897,6 +4915,8 @@ export namespace Prisma {
     action?: boolean
     userId?: boolean
     completed?: boolean
+    weekly?: boolean
+    days_in_week?: boolean
     check_in?: boolean | habit_plan$check_inArgs<ExtArgs>
     _count?: boolean | Habit_planCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["habit_plan"]>
@@ -4909,6 +4929,8 @@ export namespace Prisma {
     action?: boolean
     userId?: boolean
     completed?: boolean
+    weekly?: boolean
+    days_in_week?: boolean
   }, ExtArgs["result"]["habit_plan"]>
 
   export type habit_planSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -4919,6 +4941,8 @@ export namespace Prisma {
     action?: boolean
     userId?: boolean
     completed?: boolean
+    weekly?: boolean
+    days_in_week?: boolean
   }, ExtArgs["result"]["habit_plan"]>
 
   export type habit_planSelectScalar = {
@@ -4929,9 +4953,11 @@ export namespace Prisma {
     action?: boolean
     userId?: boolean
     completed?: boolean
+    weekly?: boolean
+    days_in_week?: boolean
   }
 
-  export type habit_planOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "created_at" | "goal" | "duration" | "action" | "userId" | "completed", ExtArgs["result"]["habit_plan"]>
+  export type habit_planOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "created_at" | "goal" | "duration" | "action" | "userId" | "completed" | "weekly" | "days_in_week", ExtArgs["result"]["habit_plan"]>
   export type habit_planInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     check_in?: boolean | habit_plan$check_inArgs<ExtArgs>
     _count?: boolean | Habit_planCountOutputTypeDefaultArgs<ExtArgs>
@@ -4952,6 +4978,8 @@ export namespace Prisma {
       action: string | null
       userId: string | null
       completed: boolean | null
+      weekly: boolean | null
+      days_in_week: number | null
     }, ExtArgs["result"]["habit_plan"]>
     composites: {}
   }
@@ -5383,6 +5411,8 @@ export namespace Prisma {
     readonly action: FieldRef<"habit_plan", 'String'>
     readonly userId: FieldRef<"habit_plan", 'String'>
     readonly completed: FieldRef<"habit_plan", 'Boolean'>
+    readonly weekly: FieldRef<"habit_plan", 'Boolean'>
+    readonly days_in_week: FieldRef<"habit_plan", 'Int'>
   }
     
 
@@ -6839,7 +6869,9 @@ export namespace Prisma {
     duration: 'duration',
     action: 'action',
     userId: 'userId',
-    completed: 'completed'
+    completed: 'completed',
+    weekly: 'weekly',
+    days_in_week: 'days_in_week'
   };
 
   export type Habit_planScalarFieldEnum = (typeof Habit_planScalarFieldEnum)[keyof typeof Habit_planScalarFieldEnum]
@@ -7202,6 +7234,8 @@ export namespace Prisma {
     action?: StringNullableFilter<"habit_plan"> | string | null
     userId?: StringNullableFilter<"habit_plan"> | string | null
     completed?: BoolNullableFilter<"habit_plan"> | boolean | null
+    weekly?: BoolNullableFilter<"habit_plan"> | boolean | null
+    days_in_week?: IntNullableFilter<"habit_plan"> | number | null
     check_in?: Check_inListRelationFilter
   }
 
@@ -7213,6 +7247,8 @@ export namespace Prisma {
     action?: SortOrderInput | SortOrder
     userId?: SortOrderInput | SortOrder
     completed?: SortOrderInput | SortOrder
+    weekly?: SortOrderInput | SortOrder
+    days_in_week?: SortOrderInput | SortOrder
     check_in?: check_inOrderByRelationAggregateInput
   }
 
@@ -7227,6 +7263,8 @@ export namespace Prisma {
     action?: StringNullableFilter<"habit_plan"> | string | null
     userId?: StringNullableFilter<"habit_plan"> | string | null
     completed?: BoolNullableFilter<"habit_plan"> | boolean | null
+    weekly?: BoolNullableFilter<"habit_plan"> | boolean | null
+    days_in_week?: IntNullableFilter<"habit_plan"> | number | null
     check_in?: Check_inListRelationFilter
   }, "id">
 
@@ -7238,6 +7276,8 @@ export namespace Prisma {
     action?: SortOrderInput | SortOrder
     userId?: SortOrderInput | SortOrder
     completed?: SortOrderInput | SortOrder
+    weekly?: SortOrderInput | SortOrder
+    days_in_week?: SortOrderInput | SortOrder
     _count?: habit_planCountOrderByAggregateInput
     _avg?: habit_planAvgOrderByAggregateInput
     _max?: habit_planMaxOrderByAggregateInput
@@ -7256,6 +7296,8 @@ export namespace Prisma {
     action?: StringNullableWithAggregatesFilter<"habit_plan"> | string | null
     userId?: StringNullableWithAggregatesFilter<"habit_plan"> | string | null
     completed?: BoolNullableWithAggregatesFilter<"habit_plan"> | boolean | null
+    weekly?: BoolNullableWithAggregatesFilter<"habit_plan"> | boolean | null
+    days_in_week?: IntNullableWithAggregatesFilter<"habit_plan"> | number | null
   }
 
   export type userWhereInput = {
@@ -7575,6 +7617,8 @@ export namespace Prisma {
     action?: string | null
     userId?: string | null
     completed?: boolean | null
+    weekly?: boolean | null
+    days_in_week?: number | null
     check_in?: check_inCreateNestedManyWithoutHabit_planInput
   }
 
@@ -7586,6 +7630,8 @@ export namespace Prisma {
     action?: string | null
     userId?: string | null
     completed?: boolean | null
+    weekly?: boolean | null
+    days_in_week?: number | null
     check_in?: check_inUncheckedCreateNestedManyWithoutHabit_planInput
   }
 
@@ -7596,6 +7642,8 @@ export namespace Prisma {
     action?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     completed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    weekly?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    days_in_week?: NullableIntFieldUpdateOperationsInput | number | null
     check_in?: check_inUpdateManyWithoutHabit_planNestedInput
   }
 
@@ -7607,6 +7655,8 @@ export namespace Prisma {
     action?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     completed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    weekly?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    days_in_week?: NullableIntFieldUpdateOperationsInput | number | null
     check_in?: check_inUncheckedUpdateManyWithoutHabit_planNestedInput
   }
 
@@ -7618,6 +7668,8 @@ export namespace Prisma {
     action?: string | null
     userId?: string | null
     completed?: boolean | null
+    weekly?: boolean | null
+    days_in_week?: number | null
   }
 
   export type habit_planUpdateManyMutationInput = {
@@ -7627,6 +7679,8 @@ export namespace Prisma {
     action?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     completed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    weekly?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    days_in_week?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type habit_planUncheckedUpdateManyInput = {
@@ -7637,6 +7691,8 @@ export namespace Prisma {
     action?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     completed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    weekly?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    days_in_week?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type userCreateInput = {
@@ -8053,11 +8109,14 @@ export namespace Prisma {
     action?: SortOrder
     userId?: SortOrder
     completed?: SortOrder
+    weekly?: SortOrder
+    days_in_week?: SortOrder
   }
 
   export type habit_planAvgOrderByAggregateInput = {
     id?: SortOrder
     duration?: SortOrder
+    days_in_week?: SortOrder
   }
 
   export type habit_planMaxOrderByAggregateInput = {
@@ -8068,6 +8127,8 @@ export namespace Prisma {
     action?: SortOrder
     userId?: SortOrder
     completed?: SortOrder
+    weekly?: SortOrder
+    days_in_week?: SortOrder
   }
 
   export type habit_planMinOrderByAggregateInput = {
@@ -8078,11 +8139,14 @@ export namespace Prisma {
     action?: SortOrder
     userId?: SortOrder
     completed?: SortOrder
+    weekly?: SortOrder
+    days_in_week?: SortOrder
   }
 
   export type habit_planSumOrderByAggregateInput = {
     id?: SortOrder
     duration?: SortOrder
+    days_in_week?: SortOrder
   }
 
   export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -8411,6 +8475,8 @@ export namespace Prisma {
     action?: string | null
     userId?: string | null
     completed?: boolean | null
+    weekly?: boolean | null
+    days_in_week?: number | null
   }
 
   export type habit_planUncheckedCreateWithoutCheck_inInput = {
@@ -8421,6 +8487,8 @@ export namespace Prisma {
     action?: string | null
     userId?: string | null
     completed?: boolean | null
+    weekly?: boolean | null
+    days_in_week?: number | null
   }
 
   export type habit_planCreateOrConnectWithoutCheck_inInput = {
@@ -8446,6 +8514,8 @@ export namespace Prisma {
     action?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     completed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    weekly?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    days_in_week?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type habit_planUncheckedUpdateWithoutCheck_inInput = {
@@ -8456,6 +8526,8 @@ export namespace Prisma {
     action?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     completed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    weekly?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    days_in_week?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type check_inCreateWithoutHabit_planInput = {
