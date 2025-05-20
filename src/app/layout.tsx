@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+"use client";
 import "./globals.css";
 import { Inter } from "next/font/google";
 import React from "react";
@@ -14,6 +14,19 @@ import {
 import { Geist, Geist_Mono } from "next/font/google";
 import { Button } from "@/components/ui/button";
 import { PostHogProvider } from "@/providers/PostHogProvider";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { Share, Plus,Download } from "lucide-react";
+import { useEffect, useState } from "react";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,10 +44,49 @@ const inter = Inter({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "Health Coach",
-  description: "A health coach assistant",
-};
+
+
+function InstallPrompt() {
+  const [isIOS, setIsIOS] = useState(false)
+  const [isStandalone, setIsStandalone] = useState(false)
+
+  useEffect(() => {
+    setIsIOS(
+      /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream
+    )
+
+    setIsStandalone(window.matchMedia('(display-mode: standalone)').matches)
+  }, [])
+
+  if (isStandalone || !isIOS) {
+    return null // Don't show install button if already installed
+  }
+
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger><Button><Download/>Install</Button></AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>To install this app on your iOS device</AlertDialogTitle>
+          <AlertDialogDescription>
+            <div className="flex items-center space-x-2">
+              <Share className="h-4 w-4" />
+              <span>Tap the share button</span>
+            </div>
+            <br />
+            <div className="flex items-center space-x-2">
+              <Plus className="h-4 w-4" />
+              <span>Select "Add to Home Screen"</span>
+            </div>
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Close</AlertDialogCancel>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  )
+}
 
 export default function RootLayout({
   children,
@@ -58,6 +110,7 @@ export default function RootLayout({
                   <SignUpButton />
                 </SignedOut>
                 <SignedIn>
+                  <InstallPrompt />
                   <UserButton />
                 </SignedIn>
               </header>
