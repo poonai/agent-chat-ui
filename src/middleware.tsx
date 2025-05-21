@@ -2,7 +2,7 @@ import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 
 
-const isProtectedRoute = createRouteMatcher(['/dashboard(.*)'])
+const isProtectedRoute = createRouteMatcher(['/dashboard(.*)', '/api/goal(.*)','/api/push(.*)' ])
 
 const middleware =  clerkMiddleware(async (auth, req) => {
     const { pathname } = req.nextUrl;

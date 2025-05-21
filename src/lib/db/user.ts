@@ -33,3 +33,18 @@ export async function getUserSubscription(userId: string): Promise<PushSubscript
 }
 
   
+// get all users subscriptions
+export async function getAllUserSubscriptions(): Promise<PushSubscription[]> {
+    const users = await prisma.user.findMany({
+        where: { pushSubscription: { not: null } },
+        select: { pushSubscription: true },
+    })
+
+    
+    return users.map(user => {
+        if (!user.pushSubscription) {
+            return null
+        }
+        return JSON.parse(user.pushSubscription)
+    })
+}

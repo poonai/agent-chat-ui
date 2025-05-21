@@ -10,6 +10,7 @@ import useSWR from 'swr'
 import { usePostHog } from 'posthog-js/react'
 import { Progress } from "@/components/ui/progress";
 import { percent } from "@/lib/utils";
+import { CalendarPlus, Flag } from "lucide-react";
 
 
 
@@ -24,22 +25,21 @@ type DashboardCardProps = {
   description: string;
   link: string;
   linkLabel: string;
+  icon?: React.ReactNode;
 };
 
-const DashboardCard: React.FC<DashboardCardProps> = ({ title, description, link, linkLabel }) => (
-  <Card className="col m-3">
+const DashboardCard: React.FC<DashboardCardProps> = ({ title, description, link, linkLabel, icon }) => (
+  <Card className="col-span-2 m-1 rounded-sm border border-gray-300 shadow-none ml-4 mr-4">
     <CardHeader>
-      <CardTitle>{title}</CardTitle>
-      <CardDescription>{description}</CardDescription>
+      <CardTitle className="font-bold">{title}</CardTitle>
+      <CardDescription className="font-normal">{description}</CardDescription>
     </CardHeader>
     <CardContent>
-      {/* Add more content here if needed */}
-    </CardContent>
-    <CardFooter>
-      <Button>
+      <Button className="rounded-sm" size="lg">
+      {icon}
         <Link href={link}>{linkLabel}</Link>
       </Button>
-    </CardFooter>
+    </CardContent>
   </Card>
 );
 
@@ -162,19 +162,21 @@ export default function DashboardPage(): React.ReactNode {
       description: "Your AI health coach is ready to help you build sustainable habits to acheive your goal.",
       link: `/chat?assistantId=plan_habit&userId=${user?.id}`,
       linkLabel: "Plan Habit",
+      icon: <CalendarPlus className="h-10 w-10" />,
     },
     {
       title: "Daily Checkin",
       description: "What did you accomplish today?",
       link: `/chat?assistantId=check_in_habit&userId=${user?.id}`,
-      linkLabel: "Checkin",
+      linkLabel: "Check-In",
+      icon: <Flag className="h-10 w-10" />,
     },
   ];
 
 
   return (
     <React.Suspense fallback={<div>Loading (layout)...</div>}>
-      <div className="grid grid-cols-2 gap-4 bg-gray-50">
+      <div className="grid grid-cols-2 gap-4">
         <div className="col-span-2">
           <div className="ml-4">
             <h2 className="text-2xl font-bold">Welcome back, {user?.firstName}</h2>
