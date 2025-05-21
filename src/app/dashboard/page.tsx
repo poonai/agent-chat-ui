@@ -10,8 +10,6 @@ import useSWR from 'swr'
 import { usePostHog } from 'posthog-js/react'
 import { Progress } from "@/components/ui/progress";
 import { percent } from "@/lib/utils";
-import { get } from "lodash";
-
 
 
 

@@ -24,7 +24,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { Share, Plus,Download } from "lucide-react";
+import { Share, Plus, Download, EllipsisVertical } from "lucide-react";
 import { useEffect, useState } from "react";
 
 
@@ -48,6 +48,7 @@ const inter = Inter({
 
 function InstallPrompt() {
   const [isIOS, setIsIOS] = useState(false)
+  const [isAndroid, setIsAndroid] = useState(false)
   const [isStandalone, setIsStandalone] = useState(false)
 
   useEffect(() => {
@@ -55,36 +56,55 @@ function InstallPrompt() {
       /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream
     )
 
+    setIsAndroid(
+      /Android/.test(navigator.userAgent) && /Chrome/.test(navigator.userAgent)
+    )
+
     setIsStandalone(window.matchMedia('(display-mode: standalone)').matches)
   }, [])
 
-  if (isStandalone || !isIOS) {
+  if (isStandalone || !isIOS && !isAndroid) {
     return null // Don't show install button if already installed
   }
 
   return (
     <AlertDialog>
-      <AlertDialogTrigger><Button><Download/>Install</Button></AlertDialogTrigger>
+      <AlertDialogTrigger><Button><Download />Install</Button></AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>To install this app on your iOS device</AlertDialogTitle>
+          <AlertDialogTitle>To install this app on your {isIOS ? "iOS" : "Android"} device</AlertDialogTitle>
           <AlertDialogDescription>
-            <div className="flex items-center space-x-2">
-              <Share className="h-4 w-4" />
-              <span>Tap the share button</span>
-            </div>
-            <br />
-            <div className="flex items-center space-x-2">
-              <Plus className="h-4 w-4" />
-              <span>Select "Add to Home Screen"</span>
-            </div>
+            {
+              (isIOS) ? (<div className="mt-2">
+                <div className="flex items-center space-x-2" >
+                  <Share className="h-4 w-4" />
+                  <span>Tap the share button</span>
+                </div>
+                <br />
+                <div className="flex items-center space-x-2">
+                  <Plus className="h-4 w-4" />
+                  <span>Select "Add to Home Screen"</span>
+                </div>
+              </div>) : (
+                <div className="mt-2">
+                <div className="flex items-center space-x-2" >
+                  <EllipsisVertical className="h-4 w-4" />
+                  <span>Tap the three dots in the top right</span>
+                </div>
+                <br />
+                <div className="flex items-center space-x-2">
+                  <Plus className="h-4 w-4" />
+                  <span>Select "Add to Home Screen"</span>
+              </div>
+            </div>)}
+
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Close</AlertDialogCancel>
         </AlertDialogFooter>
       </AlertDialogContent>
-    </AlertDialog>
+    </AlertDialog >
   )
 }
 
