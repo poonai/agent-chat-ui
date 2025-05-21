@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button"
 import Link from 'next/link'
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { EnrichedGoalForDashboard, getEnrichedGoals, GoalWithCheckIn } from "@/lib/db/goal";
 import { useUser } from "@clerk/nextjs";
 import useSWR from 'swr'
@@ -11,6 +11,7 @@ import { usePostHog } from 'posthog-js/react'
 import { Progress } from "@/components/ui/progress";
 import { percent } from "@/lib/utils";
 import { CalendarPlus, Flag } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 
 
@@ -36,7 +37,7 @@ const DashboardCard: React.FC<DashboardCardProps> = ({ title, description, link,
     </CardHeader>
     <CardContent>
       <Button className="rounded-sm" size="lg">
-      {icon}
+        {icon}
         <Link href={link}>{linkLabel}</Link>
       </Button>
     </CardContent>
@@ -45,32 +46,54 @@ const DashboardCard: React.FC<DashboardCardProps> = ({ title, description, link,
 
 const GoalCard: React.FC<EnrichedGoalForDashboard> = (goal) => {
   return (
-    <Card className="col-span-2">
-      <CardHeader>
-        <CardTitle>{goal.goal}</CardTitle>
-        <CardDescription>{goal.action}</CardDescription>
+    <Card className="col-span-2 m-1 gap-2 rounded-sm border border-gray-300 shadow-none ml-4 mr-4 mt-2">
+      <CardHeader className="gap-1 ml-.2">
+        <CardTitle className="font-bold">{goal.goal}</CardTitle>
+        <CardDescription className="font-normal text-sm">{goal.action}</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="mt-px">
+        <Separator className="m-2" />
         {(!goal.weekly && goal.totalCheckInsCount > 0) ? (
           <div>
-            <p>completed Days: {goal.currentCheckInsCount}</p>
-            <p>total Days: {goal.totalCheckInsCount}</p>
-            <p> Progress: <Progress value={percent(goal.currentCheckInsCount, goal.totalCheckInsCount)}></Progress></p>
-
+            <div className="grid grid-cols-8" >
+              <p className="font-[450] text-sm col-span-4 ">Completed Days : {goal.currentCheckInsCount}</p>
+              <Separator orientation="vertical" className="col-span-1 justify-self-center" />
+              <p className="font-[450] text-sm col-span-3">Total Days : {goal.totalCheckInsCount}</p>
+            </div>
+            <div className="grid grid-cols-4 mt-2">
+              <p className="font-semibold col-span-3">Weekly Progress</p>
+              <p className="font-semibold flex justify-end">{percent(goal.currentWeekCount, goal.targetWeekCount)}%</p>
+            </div>
+            <Progress className="h-4 bg-[#F5F5F5] mt-3" value={percent(goal.currentWeekCount, goal.targetWeekCount)}></Progress>
+            <div className="grid grid-cols-4 mt-2">
+              <p className="font-semibold col-span-3">Overall Progress</p>
+              <p className="font-semibold flex justify-end">{percent(goal.currentCheckInsCount, goal.totalCheckInsCount)}%</p>
+            </div>
+            <Progress className="h-4 bg-[#F5F5F5] mt-3" value={percent(goal.currentCheckInsCount, goal.totalCheckInsCount)}></Progress>
+            
           </div>
+
         ) : goal.weekly ? (
-          <div>
-            <p>completed Weekly Days: {goal.currentWeekCount}</p>
-            <p>completed Days: {goal.currentCheckInsCount}</p>
-            <p>total Days: {goal.totalCheckInsCount}</p>
-            <p>Current Week Progress: <Progress value={percent(goal.currentWeekCount, goal.targetWeekCount)}></Progress></p>
-            <p>Overall Progress: <Progress value={percent(goal.currentCheckInsCount, goal.totalCheckInsCount)}></Progress></p>
+              <div>
+            <div className="grid grid-cols-8" >
+              <p className="font-[450] text-sm col-span-4 ">Completed Days : {goal.currentCheckInsCount}</p>
+              <Separator orientation="vertical" className="col-span-1 justify-self-center" />
+              <p className="font-[450] text-sm col-span-3">Total Days : {goal.totalCheckInsCount}</p>
+            </div>
+            <div className="grid grid-cols-4 mt-2">
+              <p className="font-semibold col-span-3">Overall Progress</p>
+              <p className="font-semibold flex justify-end">{percent(goal.currentCheckInsCount, goal.totalCheckInsCount)}%</p>
+            </div>
+            <Progress className="h-4 bg-[#F5F5F5] mt-3" value={percent(goal.currentCheckInsCount, goal.totalCheckInsCount)}></Progress>
           </div>
 
-        ) : (<div>
-          <p>Current Streak: {goal.currentStreak > 0 ? goal.currentStreak : 0}</p>
-          <p>Highest Streak: {goal.highestStreak > 0 ? goal.highestStreak : 0}</p>
-        </div>)}
+        ) : (
+          <div className="grid grid-cols-8" >
+            <p className="font-[450] text-sm col-span-3 ">Current Streak: {goal.currentStreak > 0 ? goal.currentStreak : 0}</p>
+            <Separator orientation="vertical" className="col-span-1 justify-self-center" />
+            <p className="font-[450] text-sm col-span-4">Highest Streak: {goal.highestStreak > 0 ? goal.highestStreak : 0}</p>
+          </div>
+        )}
 
         {/* {!goal.weekly && goal.totalCheckInsCount > 0 ? ()} */}
       </CardContent>
@@ -191,11 +214,14 @@ export default function DashboardPage(): React.ReactNode {
             <h2 className="text-2xl font-bold">Your Goals</h2>
             <p className="text-gray-500">Here are your current goals:</p>
           </div>
+
           <section>
             {goals.map((goal: EnrichedGoalForDashboard) => (
               <GoalCard key={goal.id} {...goal} />
             ))}
           </section>
+
+
         </div>
       </div>
     </React.Suspense>

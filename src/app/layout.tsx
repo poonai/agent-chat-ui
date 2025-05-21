@@ -69,7 +69,7 @@ function InstallPrompt() {
 
   return (
     <AlertDialog>
-      <AlertDialogTrigger><Button><Download />Install</Button></AlertDialogTrigger>
+      <AlertDialogTrigger><Button className="rounder-xl"><Download /></Button></AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>To install this app on your {isIOS ? "iOS" : "Android"} device</AlertDialogTitle>
