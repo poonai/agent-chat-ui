@@ -1,6 +1,6 @@
 self.addEventListener('push', function (event) {
   if (event.data) {
-    const data = event.data.json()
+    const data = JSON.parse(event.data.text())
     const options = {
       body: data.body,
       icon: data.icon || '/favicon-96x96.png',

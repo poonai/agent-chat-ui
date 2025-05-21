@@ -1,7 +1,7 @@
 // @ts-expect-error: 'web-push' may not have type definitions in this environment
 import webpush from 'web-push'
 import { currentUser } from '@clerk/nextjs/server'
-import { updateUserSubscription } from '@/lib/db/user'  
+import { updateUserSubscription, getUserSubscription } from '@/lib/db/user'  
 import { NextResponse } from 'next/server'
 
 webpush.setVapidDetails(
@@ -22,4 +22,28 @@ export async function POST(request: Request) {
   }
   await updateUserSubscription(user.id, subscription)
   return NextResponse.json({ message: 'Subscription updated' })
+}
+
+
+export async function GET(request: Request) {
+  const user = await currentUser()
+  if (!user) {
+    return new Response('Unauthorized', { status: 401 })
+  }
+  const subscription = await getUserSubscription(user.id)
+  if (!subscription) {
+    return new Response('No subscription found', { status: 404 })
+  }
+  // Send a test notification
+  try {
+    const res = await webpush.sendNotification(subscription, JSON.stringify({
+      title: 'Test Notification',
+      body: 'This is a test notification',
+    }))
+    console.log('Notification sent:', res)
+  } catch (error) {
+    console.error('Error sending notification:', error)
+    return new Response('Error sending notification', { status: 500 })
+  }
+  return NextResponse.json({ subscription })
 }

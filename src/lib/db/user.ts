@@ -18,4 +18,18 @@ export async function updateUserSubscription(
     })
 }
 
+
+export async function getUserSubscription(userId: string): Promise<PushSubscription | null> {
+    const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { pushSubscription: true },
+    })
+
+    if (!user || !user.pushSubscription) {
+        return null
+    }
+
+    return JSON.parse(user.pushSubscription)
+}
+
   
