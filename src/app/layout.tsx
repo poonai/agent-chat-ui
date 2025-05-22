@@ -1,4 +1,3 @@
-"use client";
 import "./globals.css";
 import { Inter } from "next/font/google";
 import React from "react";
@@ -25,7 +24,8 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Share, Plus, Download, EllipsisVertical } from "lucide-react";
-import { useEffect, useState } from "react";
+import { headers } from 'next/headers'
+
 
 
 const geistSans = Geist({
@@ -46,25 +46,20 @@ const inter = Inter({
 
 
 
-function InstallPrompt() {
-  const [isIOS, setIsIOS] = useState(false)
-  const [isAndroid, setIsAndroid] = useState(false)
-  const [isStandalone, setIsStandalone] = useState(false)
+async function InstallPrompt() {
+  const headersList = await headers()
+  const userAgent = headersList.get('user-agent')
+  const isIOS =
+    /iPad|iPhone|iPod/.test(userAgent || "") && !(userAgent || "").includes("MSStream");
 
-  useEffect(() => {
-    setIsIOS(
-      /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream
-    )
+  const isAndroid =
+    /Android/.test(userAgent || "") && /Chrome/.test(userAgent || "");
 
-    setIsAndroid(
-      /Android/.test(navigator.userAgent) && /Chrome/.test(navigator.userAgent)
-    )
+  // Standalone detection is not possible server-side, so assume false
+  const isStandalone = false;
 
-    setIsStandalone(window.matchMedia('(display-mode: standalone)').matches)
-  }, [])
-
-  if (isStandalone || !isIOS && !isAndroid) {
-    return null // Don't show install button if already installed
+  if (isStandalone || (!isIOS && !isAndroid)) {
+    return null; // Don't show install button if already installed
   }
 
   return (
@@ -87,16 +82,16 @@ function InstallPrompt() {
                 </div>
               </div>) : (
                 <div className="mt-2">
-                <div className="flex items-center space-x-2" >
-                  <EllipsisVertical className="h-4 w-4" />
-                  <span>Tap the three dots in the top right</span>
-                </div>
-                <br />
-                <div className="flex items-center space-x-2">
-                  <Plus className="h-4 w-4" />
-                  <span>Select "Add to Home Screen"</span>
-              </div>
-            </div>)}
+                  <div className="flex items-center space-x-2" >
+                    <EllipsisVertical className="h-4 w-4" />
+                    <span>Tap the three dots in the top right</span>
+                  </div>
+                  <br />
+                  <div className="flex items-center space-x-2">
+                    <Plus className="h-4 w-4" />
+                    <span>Select "Add to Home Screen"</span>
+                  </div>
+                </div>)}
 
           </AlertDialogDescription>
         </AlertDialogHeader>
@@ -108,7 +103,7 @@ function InstallPrompt() {
   )
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

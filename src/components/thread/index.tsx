@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import { ReactNode, useEffect, useRef } from "react";
+import { ReactNode, use, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useStreamContext } from "@/providers/Stream";
@@ -38,6 +38,7 @@ import {
   ArtifactTitle,
   useArtifactContext,
 } from "./artifact";
+import { send } from "node:process";
 
 function StickyToBottomContent(props: {
   content: ReactNode;
@@ -132,7 +133,7 @@ export function Thread() {
   const isLargeScreen = useMediaQuery("(min-width: 1024px)");
   const [assistantId, _] = useQueryState("assistantId", { defaultValue: "default" });
   const [userId, _a] = useQueryState("userId", { defaultValue: "" });
-  
+
 
   const stream = useStreamContext();
   const messages = stream.messages;
@@ -190,8 +191,7 @@ export function Thread() {
     prevMessageLength.current = messages.length;
   }, [messages]);
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
+  const sendMessage = () => {
     if (!input.trim() || isLoading) return;
     setFirstTokenReceived(false);
 
@@ -223,6 +223,11 @@ export function Thread() {
     );
 
     setInput("");
+  };
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    sendMessage();
   };
 
   const handleRegenerate = (
