@@ -30,7 +30,7 @@ type DashboardCardProps = {
 };
 
 const DashboardCard: React.FC<DashboardCardProps> = ({ title, description, link, linkLabel, icon }) => (
-  <Card className="col-span-2 m-1 rounded-sm border border-gray-300 shadow-none ml-4 mr-4">
+  <Card className="m-1 rounded-sm border border-gray-300 shadow-none ml-4 mr-4 mt-2">
     <CardHeader>
       <CardTitle className="font-bold">{title}</CardTitle>
       <CardDescription className="font-normal">{description}</CardDescription>
@@ -199,8 +199,8 @@ export default function DashboardPage(): React.ReactNode {
 
   return (
     <React.Suspense fallback={<div>Loading (layout)...</div>}>
-      <div className="grid grid-cols-2 gap-4">
-        <div className="col-span-2">
+      <div className="gap-4">
+        <div >
           <div className="ml-4">
             <h2 className="text-2xl font-bold">Welcome back, {user?.firstName}</h2>
             <p className="text-gray-500">Let's continue your wellness journey</p>
@@ -209,8 +209,8 @@ export default function DashboardPage(): React.ReactNode {
         {cards.map((card, idx) => (
           <DashboardCard key={idx} {...card} />
         ))}
-        <div className="col-span-2">
-          <div className="ml-4">
+        <div>
+          <div className="ml-4 sticky top-0 z-10 bg-white my-2">
             <h2 className="text-2xl font-bold">Your Goals</h2>
             <p className="text-gray-500">Here are your current goals:</p>
           </div>
